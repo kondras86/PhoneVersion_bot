@@ -1,11 +1,12 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler
+from telegram.ext.filters import UpdateType  # ✅ Важно: используем UpdateType
 
-# Токен бота (замените на свой)
+# Токен бота
 TOKEN = '7812504089:AAGw29jvHdDqa1tPhDL3okFY1gb0y889zyw'
 
-# URL WebApp (замените на свой после деплоя на Render)
-WEBAPP_URL = "https://your-render-app.onrender.com "
+# URL WebApp
+WEBAPP_URL = "https://your-webapp.onrender.com "
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = InlineKeyboardMarkup([[
@@ -25,7 +26,10 @@ async def handle_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.WEB_APP_DATA, handle_data))
+    
+    # ✅ Используем UpdateType.WEB_APP_DATA вместо filters.WEB_APP_DATA
+    app.add_handler(MessageHandler(UpdateType.WEB_APP_DATA, handle_data))
+
     print("Бот запущен...")
     app.run_polling()
 
