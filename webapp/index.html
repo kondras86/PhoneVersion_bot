@@ -1,22 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <title>Определение модели телефона</title>
+    <meta charset="UTF-8" />
+    <title>Определение устройства</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
-  <h2>Нажми кнопку ниже</h2>
-  <button onclick="sendData()">Отправить модель телефона</button>
+    <h2>Определение модели устройства</h2>
+    <p id="info">Определяем...</p>
 
-  <script>
-    function sendData() {
-      const ua = navigator.userAgent || navigator.vendor || window.opera;
-      if (window.Telegram && window.Telegram.WebApp) {
-        Telegram.WebApp.sendData(ua); // Отправка данных в Telegram
-        Telegram.WebApp.close(); // Закрытие окна
-      } else {
-        alert("Вы не в Telegram WebApp");
-      }
-    }
-  </script>
+    <script>
+        const userAgent = navigator.userAgent;
+        document.getElementById("info").textContent = "User-Agent: " + userAgent;
+
+        // Если запущено внутри Telegram
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready(); // Готовность интерфейса
+            window.Telegram.WebApp.sendData(userAgent); // Отправка данных в бота
+            setTimeout(() => window.Telegram.WebApp.close(), 1000); // Закрыть через секунду
+        } else {
+            document.body.innerHTML = "<p>Эта страница должна открываться из Telegram.</p>";
+        }
+    </script>
 </body>
 </html>
