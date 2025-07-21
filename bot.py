@@ -9,15 +9,15 @@ TOKEN = os.getenv("TOKEN")
 if not TOKEN:
     raise RuntimeError("Переменная окружения TOKEN не установлена!")
 
-# URL вашего WebApp
-WEBAPP_URL = "https://phoneversion-bot.onrender.com"
+# URL вашего WebApp — обязательно используйте ваш реальный поддомен
+WEBAPP_URL = "https://phoneversion-bot.onrender.com ".strip()
 
 # Создаём Flask-приложение
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "<h1>Бот работает! Это служебная страница.</h1>"
+    return "<h1>Бот работает! Это служебная страница.</h1>", 200
 
 # Функция для запуска Flask в отдельном потоке
 def run_flask():
@@ -64,7 +64,7 @@ def main():
 
     # Запускаем polling Telegram-бота
     print("✅ Бот запущен и слушает обновления...")
-    tg_app.run_polling()
+    tg_app.run_polling(drop_pending_updates=True)  # Защита от конфликтов
 
 if __name__ == "__main__":
     main()
