@@ -9,9 +9,11 @@ TOKEN = os.getenv("TOKEN")
 if not TOKEN:
     raise RuntimeError("Переменная окружения TOKEN не установлена!")
 
-# URL вашего WebApp — обязательно используйте ваш реальный поддомен
-url = os.getenv("WEB_APP_URL", DEFAULT_WEB_APP_URL).strip()
-DEFAULT_WEB_APP_URL = "https://phoneversion-bot.onrender.com"
+# URL Web App: берём из .env или используем значение по умолчанию
+DEFAULT_WEB_APP_URL = "https://phoneversion-bot.onrender.com "
+
+# Получаем URL и очищаем его от пробелов
+WEBAPP_URL = os.getenv("WEB_APP_URL", DEFAULT_WEB_APP_URL).strip()
 
 # Создаём Flask-приложение
 app = Flask(__name__)
