@@ -10,7 +10,7 @@ if not TOKEN:
     raise RuntimeError("Переменная окружения TOKEN не установлена!")
 
 # URL по умолчанию
-DEFAULT_WEB_APP_URL = "https://phoneversion-bot-7.onrender.com"
+DEFAULT_WEB_APP_URL = "https://phoneversion-bot.onrender.com"
 
 # ✅ Главная строка, которой не хватает:
 WEBAPP_URL = os.getenv("WEB_APP_URL", DEFAULT_WEB_APP_URL).strip()
