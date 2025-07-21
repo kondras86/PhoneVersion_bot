@@ -9,13 +9,7 @@ TOKEN = os.getenv("TOKEN")
 if not TOKEN:
     raise RuntimeError("Переменная окружения TOKEN не установлена!")
 
-DEFAULT_WEB_APP_URL = "phoneversion-bot-7.onrender.com"  # Без пробелов!
-
-WEBAPP_URL = os.getenv("WEB_APP_URL", DEFAULT_WEB_APP_URL).strip()
-
-# Проверка
-if " " in WEBAPP_URL:
-    raise ValueError(f"URL содержит пробелы: {repr(WEBAPP_URL)}")
+DEFAULT_WEB_APP_URL = "http://phoneversion-bot-7.onrender.com"  # Без пробелов!
 
 # Создаём Flask-приложение
 app = Flask(__name__)
