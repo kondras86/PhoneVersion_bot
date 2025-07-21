@@ -10,7 +10,7 @@ if not TOKEN:
     raise RuntimeError("Переменная окружения TOKEN не установлена!")
 
 # URL вашего WebApp — обязательно используйте ваш реальный поддомен
-WEBAPP_URL = "https://google.com"
+WEBAPP_URL = "https://your-webapp.onrender.com*"
 
 # Создаём Flask-приложение
 app = Flask(__name__)
