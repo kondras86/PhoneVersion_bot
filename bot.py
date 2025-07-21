@@ -10,7 +10,7 @@ if not TOKEN:
     raise RuntimeError("Переменная окружения TOKEN не установлена!")
 
 # URL вашего WebApp
-WEBAPP_URL = "https://phoneversion-bot.onrender.com"  # 🔁 Замените на реальный URL
+WEBAPP_URL = "https://phoneversion-bot-7.onrender.com"  # 🔁 Замените на реальный URL
 
 # Создаём Flask-приложение
 app = Flask(__name__)
