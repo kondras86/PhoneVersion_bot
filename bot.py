@@ -1,14 +1,31 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
+import os
+from flask import Flask
+import threading
 
-# Токен бота (лучше вынести в переменные окружения!)
-TOKEN = '7812504089:AAGw29jvHdDqa1tPhDL3okFY1gb0y889zyw'
+# Токен из переменной окружения
+TOKEN = os.getenv("TOKEN")
+if not TOKEN:
+    raise RuntimeError("Переменная окружения TOKEN не установлена!")
 
-# URL вашего WebApp (уберите лишние пробелы!)
-WEBAPP_URL = "https://your-webapp.onrender.com "  # 🔴 ВАЖНО: замените на реальный URL
+# URL вашего WebApp
+WEBAPP_URL = "https://your-webapp.onrender.com "  # 🔁 Замените на реальный URL
 
+# Создаём Flask-приложение
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "<h1>Бот работает! Это служебная страница.</h1>"
+
+# Функция для запуска Flask в отдельном потоке
+def run_flask():
+    port = int(os.getenv('PORT', 10000))
+    app.run(host="0.0.0.0", port=port)
+
+# Команда /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Обработчик команды /start"""
     keyboard = InlineKeyboardMarkup([
         [InlineKeyboardButton(
             "Определить модель телефона",
@@ -20,10 +37,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=keyboard
     )
 
-
+# Обработчик данных из Web App
 async def handle_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Обработчик данных из Web App"""
-    if update.message and update.message.web_app_data and update.message.web_app_data.data:
+    if update.message and update.message.web_app_data:
         data = update.message.web_app_data.data
         user = update.message.from_user
         await update.message.reply_text(
@@ -32,20 +48,23 @@ async def handle_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         print(f"[+] Пользователь: {user.id} | User-Agent: {data}")
     else:
-        await update.message.reply_text("Не удалось получить данные из приложения.")
+        await update.message.reply_text("Не удалось получить данные.")
 
-
+# Основная функция
 def main():
-    """Запуск бота"""
-    app = Application.builder().token(TOKEN).build()
+    # Создаём приложение Telegram
+    tg_app = Application.builder().token(TOKEN).build()
 
-    # Обработчики
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, handle_data))  # ✅ Правильный фильтр
+    # Добавляем обработчики
+    tg_app.add_handler(CommandHandler("start", start))
+    tg_app.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, handle_data))
 
-    print("✅ Бот запущен... Ожидание сообщений.")
-    app.run_polling()
+    # Запускаем Flask в отдельном потоке
+    threading.Thread(target=run_flask, daemon=True).start()
 
+    # Запускаем polling Telegram-бота
+    print("✅ Бот запущен и слушает обновления...")
+    tg_app.run_polling()
 
 if __name__ == "__main__":
     main()
